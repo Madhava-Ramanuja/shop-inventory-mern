@@ -18,7 +18,7 @@ function App() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/products');
+      const res = await axios.get('https://sivvarajainventory.onrender.com/api/products');
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -47,9 +47,9 @@ function App() {
     e.preventDefault();
     try {
       if (view === 'add') {
-        await axios.post('http://localhost:5000/api/products', formData);
+        await axios.post('https://sivvarajainventory.onrender.com/api/products', formData);
       } else if (view === 'edit') {
-        await axios.put(`http://localhost:5000/api/products/${formData.id}`, formData);
+        await axios.put(`https://sivvarajainventory.onrender.com/${formData.id}`, formData);
       }
       fetchProducts();
       setView('list'); 
@@ -60,7 +60,7 @@ function App() {
 
   const handleDelete = async (id) => {
     if (window.confirm('Delete this product?')) {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(`https://sivvarajainventory.onrender.com/${id}`);
       fetchProducts();
     }
   };
