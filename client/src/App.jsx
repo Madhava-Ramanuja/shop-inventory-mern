@@ -43,31 +43,56 @@ function App() {
   };
   // -------------------------------
 
-  const handleSave = async (e) => {
+const handleSave = async (e) => {
     e.preventDefault();
     try {
+      // Convert numbers to ensure backend accepts them
+      const payload = {
+        ...formData,
+        price: Number(formData.price),
+        quantity: Number(formData.quantity)
+      };
+
       if (view === 'add') {
-        await axios.post('https://sivvarajainventory.onrender.com/api/products', formData);
+        await axios.post('https://sivvarajainventory.onrender.com/api/products', payload);
       } else if (view === 'edit') {
-        await axios.put(`https://sivvarajainventory.onrender.com/${formData.id}`, formData);
+        console.log("Updating ID:", formData.id); // Debug check
+        await axios.put(`https://sivvarajainventory.onrender.com/api/products/${formData.id}`, payload);
       }
+      
       fetchProducts();
       setView('list'); 
     } catch (err) {
-      console.error(err);
+      console.error("Save Failed:", err);
+      alert("Error saving product. See console.");
     }
   };
 
-  const handleDelete = async (id) => {
+const handleDelete = async (id) => {
+    // Debugging: Check if ID is actually being passed
+    console.log("Attempting to delete ID:", id); 
+
     if (window.confirm('Delete this product?')) {
-      await axios.delete(`https://sivvarajainventory.onrender.com/${id}`);
-      fetchProducts();
+      try {
+        await axios.delete(`https://sivvarajainventory.onrender.com/api/products/${id}`);
+        alert("Product Deleted Successfully!"); // Optional: Feedback
+        fetchProducts(); // Refresh the list
+      } catch (err) {
+        console.error("Delete Failed:", err);
+        alert("Failed to delete. Check console for details.");
+      }
     }
   };
 
-  const startEdit = (product) => {
+const startEdit = (product) => {
+    // Debugging: Make sure product has an _id before setting state
+    if (!product._id) {
+      alert("Error: This product has no ID!");
+      return;
+    }
+
     setFormData({
-      id: product._id,
+      id: product._id, // Ensure this maps _id to id
       name: product.name,
       price: product.price,
       quantity: product.quantity,
